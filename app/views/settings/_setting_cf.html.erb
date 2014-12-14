@@ -41,19 +41,7 @@
             drop: function( event, ui ) {
                 $( this ).find( ".placeholder" ).remove();
                 id = ui.draggable.attr('id');
-                if(ui.draggable.attr('class').contains('cf_objects_non_selected'))
-                {
-
-                    $( "<li class='cf_objects_selected' id="+id+" ></li>" ).append( ui.draggable.text() ).appendTo( this );
-
-                }
-                else
-                {
-
-                    $( "<li class='cf_objects_non_selected' id="+id+" ></li>" ).append( ui.draggable.text() ).appendTo( this );
-
-
-                }
+                    $( "<li id="+id+" ></li>" ).append( ui.draggable.text() ).appendTo( this );
                 ui.draggable.remove();
                 $( ".cart li" ).draggable({
                     appendTo: "body",
@@ -89,7 +77,7 @@
             <li class="placeholder">Add your items here</li>
         <% end %>
         <% cfs.each do |cf| %>
-            <li class="cf_objects_non_selected" id="<%= cf.id %>" >
+            <li id="<%= cf.id %>" >
               <%= cf.name %>
             </li>
         <% end %>
@@ -104,7 +92,7 @@
          <li class="placeholder">Add your items here</li>
       <% end %>
       <% cfs_opt.each do |cf| %>
-          <li class="cf_objects_selected" id="<%= cf.id %>">
+          <li  id="<%= cf.id %>">
            <%= cf.name %>
           </li>
       <% end %>
