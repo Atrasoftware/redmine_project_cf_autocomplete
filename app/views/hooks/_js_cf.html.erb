@@ -1,8 +1,26 @@
 
     <%= javascript_include_tag 'select2', :plugin=> 'redmine_project_cf_autocomplete' %>
     <%= stylesheet_link_tag 'select2', :plugin=> 'redmine_project_cf_autocomplete' %>
-    <%= stylesheet_link_tag 'bootstrap', :plugin=> 'redmine_project_cf_autocomplete' %>
 
+<style>
+    .form-control {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+</style>
    <script type="text/javascript">
        $(document).ready(function(){
 
@@ -13,7 +31,7 @@
                      tab.push("<%= v %>");
                <% end%>
                var availableTags<%=key%> = tab;
-                $("#project_custom_field_values_<%= key %>").css("borderColor","#00ACEE");
+                $("#project_custom_field_values_<%= key %>").addClass("form-control");
                 $("#project_custom_field_values_<%= key %>").autocomplete({
                     source: availableTags<%=key%>
                 });
