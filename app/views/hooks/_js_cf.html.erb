@@ -1,10 +1,25 @@
+
+    <%= javascript_include_tag 'select2', :plugin=> 'redmine_project_cf_autocomplete' %>
+    <%= stylesheet_link_tag 'select2', :plugin=> 'redmine_project_cf_autocomplete' %>
+    <%= stylesheet_link_tag 'select2-bootstrap', :plugin=> 'redmine_project_cf_autocomplete' %>
+
+<script>
+    $(document).ready(function(){
+        $(".list_cf").select2({
+            placeholder: "Select option.",
+            allowClear: true
+        });
+    });
+</script>
 <script>
     $(function() {
         <% @hash.each do |key, value| %>
-        var availableTags<%=key%> = <%= value %>;
-        $("#project_custom_field_values_<%= key %>").autocomplete({
-            source: availableTags<%=key%>
-        });
+           var availableTags<%=key%> = <%= value %>;
+            $("#project_custom_field_values_<%= key %>").autocomplete({
+                source: availableTags<%=key%>
+            });
+
         <% end %>
     });
+
 </script>
