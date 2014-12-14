@@ -35,7 +35,7 @@ module  Patches
               end
             end
 
-          @hash[cf.id.to_s] = available_tag
+          @hash[cf.id.to_s] = available_tag.uniq
         end
       end
 
