@@ -17,10 +17,13 @@
 
 <style>
     h1 { padding: .2em; margin: 0; }
-    #products { float: left; width: 45%; margin-right: 2em; }
-    #cart { width: 45%; float: right; margin-top: 1em; }
+
+    .cart { width: 45%;  margin-top: 1em; }
     /* style the list to maximize the droppable hitarea */
-    #cart ol { margin: 0; padding: 1em 0 1em 3em; }
+    .cart ol { margin: 0; padding: 1em 0 1em 3em; }
+    .cart ol li{ font-weight: bold;}
+    .selected {float: right;}
+    .non_selected {float: left;}
     .delete_cf {float: right; cursor: pointer;  color:#0066DD;}
     .settings { overflow: hidden;}
 
@@ -30,34 +33,45 @@
 </style>
 <script>
     $(function() {
-        $( "#catalog" ).accordion();
-        $( "#catalog li" ).draggable({
+       $( ".cart li" ).draggable({
             appendTo: "body",
             helper: "clone"
         });
-        $( "#cart ol" ).droppable({
+        $( ".cart ol" ).droppable({
             activeClass: "ui-state-default",
             hoverClass: "ui-state-hover",
             accept: ":not(.ui-sortable-helper)",
             drop: function( event, ui ) {
                 $( this ).find( ".placeholder" ).remove();
-                id_li=ui.draggable.attr('id');
-                id = id_li.replace('non_selected_','');
-                $( "<li ><span  class='delete_cf js_li' id="+id+" >delete</span></li>" )
-                        .append( ui.draggable.text() ).appendTo( this );
-                $(".js_li").on("click",function(){
-                   id=$(this).attr('id')
-                    delete_cf_li(id);
+                id = ui.draggable.attr('id');
+                if(ui.draggable.attr('class').contains('cf_objects_non_selected'))
+                {
+
+                    $( "<li class='cf_objects_selected' id="+id+" ></li>" ).append( ui.draggable.text() ).appendTo( this );
+
+                }
+                else
+                {
+
+                    $( "<li class='cf_objects_non_selected' id="+id+" ></li>" ).append( ui.draggable.text() ).appendTo( this );
+
+
+                }
+                ui.draggable.remove();
+                $( ".cart li" ).draggable({
+                    appendTo: "body",
+                    helper: "clone"
                 });
-                value = $("#choosed_cf").children('input').val();
-                if(value.length>0)
-                   value = value  +'|'
-                $("#choosed_cf").children('input').val(value + id);
-                $(".list_cf_non_selected").children("#"+id_li).remove();
+                children = $('.list_cf_selected').children('li');
+                arr= [];
+                for(var i=0;i<children.length;i++){
+                    arr.push (children.eq(i).attr('id'))
+                }
 
-
+                $("#choosed_cf").children('input').val(arr.toString().replace(',','|'));
+                $(".list_cf_non_selected").children("#"+id).remove();
             }
-       // onclick='delete_cf_li('"+id_compet+"');'
+
     }).sortable({
             items: "li:not(.placeholder)",
             sort: function() {
@@ -67,42 +81,25 @@
             }
         });
     });
-        function delete_cf_li(attr){
-            $("#"+attr).remove();
-            values = $("#choosed_cf").children('input').val();
-            var array='';
-            if(!values.contains('|'))
-            {
-               array = [values]
-            }
-            else
-            {
-               array = values.split('|');
-                var index = array.indexOf(attr);
-                if (index > -1)
-                    array.splice(index, 1);
-            }
-            val= array.toString('|').replace(',','|');
-            $("#choosed_cf").children('input').val();
-            $('.list_cf_non_selected').append("<li class='ui-state-default' id='"+attr+"'>"+text +"</li>");
-
-        }
 </script>
 <div style="background-color: #F6F6F6;">
-<div id="products">
-  <div id="catalog">
-    <h2><a href="#">Listed CFs</a></h2>
-    <div>
-      <ul id="sortable" class="list_cf_non_selected">
-        <% cfs.each do |cf| %>
-            <li class='ui-state-default' id="non_selected_<%= cf.id %>"> <%= cf.name %></li>
+
+  <div class="cart non_selected">
+    <h1 class="ui-widget-header">NON Selected CF</h1>
+    <div class="ui-widget-content">
+      <ol >
+        <% if cfs_opt.blank? %>
+            <li class="placeholder">Add your items here</li>
         <% end %>
-      </ul>
+        <% cfs.each do |cf| %>
+            <li class="cf_objects_non_selected" id="<%= cf.id %>" >
+              <%= cf.name %>
+            </li>
+        <% end %>
+      </ol>
     </div>
   </div>
-</div>
-
-<div id="cart">
+<div class="cart selected">
   <h1 class="ui-widget-header">Selected CF</h1>
   <div class="ui-widget-content">
     <ol class="list_cf_selected">
@@ -110,14 +107,14 @@
          <li class="placeholder">Add your items here</li>
       <% end %>
       <% cfs_opt.each do |cf| %>
-          <li class="cf_objects" id="<%= cf.id %>">
-            <span class="delete_cf" onclick="delete_cf_li(<%= cf.id %>)">delete</span>
-            <%= cf.name %></li>
+          <li class="cf_objects_selected" id="<%= cf.id %>">
+           <%= cf.name %>
+          </li>
       <% end %>
     </ol>
   </div>
 </div>
 <div id="choosed_cf">
-  <%= text_field_tag "settings[choosed_cf]", @settings[:choosed_cf] %>
+  <%= hidden_field_tag "settings[choosed_cf]", @settings[:choosed_cf] %>
 </div>
 </div>
