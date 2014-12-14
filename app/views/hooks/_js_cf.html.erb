@@ -13,7 +13,7 @@
                      tab.push("<%= v %>");
                <% end%>
                var availableTags<%=key%> = tab;
-                $("#project_custom_field_values_<%= key %>").addClass("inputSuccess1");
+                $("#project_custom_field_values_<%= key %>").css("borderColor","#00ACEE");
                 $("#project_custom_field_values_<%= key %>").autocomplete({
                     source: availableTags<%=key%>
                 });
