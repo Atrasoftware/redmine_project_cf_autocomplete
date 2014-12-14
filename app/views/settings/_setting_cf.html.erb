@@ -22,14 +22,11 @@
     /* style the list to maximize the droppable hitarea */
     .cart ol { margin: 0; padding: 1em 0 1em 3em; }
     .cart ol li{ font-weight: bold;}
-    .selected {float: right;}
+    .selected_cf {float: right;}
     .non_selected {float: left;}
-    .delete_cf {float: right; cursor: pointer;  color:#0066DD;}
+
     .settings { overflow: hidden;}
 
-    #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-    #sortable li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; height: 1.5em; }
-    html>body #sortable li { height: 1.5em; line-height: 1.2em; }
 </style>
 <script>
     $(function() {
@@ -88,7 +85,7 @@
     <h1 class="ui-widget-header">NON Selected CF</h1>
     <div class="ui-widget-content">
       <ol >
-        <% if cfs_opt.blank? %>
+        <% if cfs.blank? %>
             <li class="placeholder">Add your items here</li>
         <% end %>
         <% cfs.each do |cf| %>
@@ -99,7 +96,7 @@
       </ol>
     </div>
   </div>
-<div class="cart selected">
+<div class="cart selected_cf">
   <h1 class="ui-widget-header">Selected CF</h1>
   <div class="ui-widget-content">
     <ol class="list_cf_selected">
