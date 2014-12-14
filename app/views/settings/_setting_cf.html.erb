@@ -1,0 +1,123 @@
+<% cfs_options = @settings[:choosed_cf]
+
+   cfs_opt = Array.new
+   cfs = CustomField.where(type: "ProjectCustomField")
+   if cfs_options and cfs_options.present?
+     cfs_options= cfs_options.split('|')
+
+     cfs_options.each do |cf_id|
+       cf = cfs.select{|c| "#{c.id}" == "#{cf_id}" }
+       cfs_opt<< cf
+       cfs = cfs.reject{|c| "#{c.id}" == "#{cf_id}" }
+     end
+   end
+
+   cfs_opt.flatten!
+   %>
+
+<style>
+    h1 { padding: .2em; margin: 0; }
+    #products { float: left; width: 45%; margin-right: 2em; }
+    #cart { width: 45%; float: right; margin-top: 1em; }
+    /* style the list to maximize the droppable hitarea */
+    #cart ol { margin: 0; padding: 1em 0 1em 3em; }
+    .delete_cf {float: right; cursor: pointer;  color:#0066DD;}
+    .settings { overflow: hidden;}
+
+    #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+    #sortable li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; height: 1.5em; }
+    html>body #sortable li { height: 1.5em; line-height: 1.2em; }
+</style>
+<script>
+    $(function() {
+        $( "#catalog" ).accordion();
+        $( "#catalog li" ).draggable({
+            appendTo: "body",
+            helper: "clone"
+        });
+        $( "#cart ol" ).droppable({
+            activeClass: "ui-state-default",
+            hoverClass: "ui-state-hover",
+            accept: ":not(.ui-sortable-helper)",
+            drop: function( event, ui ) {
+                $( this ).find( ".placeholder" ).remove();
+                id_li=ui.draggable.attr('id');
+                id = id_li.replace('non_selected_','');
+                $( "<li ><span  class='delete_cf js_li' id="+id+" >delete</span></li>" )
+                        .append( ui.draggable.text() ).appendTo( this );
+                $(".js_li").on("click",function(){
+                   id=$(this).attr('id')
+                    delete_cf_li(id);
+                });
+                value = $("#choosed_cf").children('input').val();
+                if(value.length>0)
+                   value = value  +'|'
+                $("#choosed_cf").children('input').val(value + id);
+                $(".list_cf_non_selected").children("#"+id_li).remove();
+
+
+            }
+       // onclick='delete_cf_li('"+id_compet+"');'
+    }).sortable({
+            items: "li:not(.placeholder)",
+            sort: function() {
+// gets added unintentionally by droppable interacting with sortable
+// using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
+                $( this ).removeClass( "ui-state-default" );
+            }
+        });
+    });
+        function delete_cf_li(attr){
+            $("#"+attr).remove();
+            values = $("#choosed_cf").children('input').val();
+            var array='';
+            if(!values.contains('|'))
+            {
+               array = [values]
+            }
+            else
+            {
+               array = values.split('|');
+                var index = array.indexOf(attr);
+                if (index > -1)
+                    array.splice(index, 1);
+            }
+            val= array.toString('|').replace(',','|');
+            $("#choosed_cf").children('input').val();
+            $('.list_cf_non_selected').append("<li class='ui-state-default' id='"+attr+"'>"+text +"</li>");
+
+        }
+</script>
+<div style="background-color: #F6F6F6;">
+<div id="products">
+  <div id="catalog">
+    <h2><a href="#">Listed CFs</a></h2>
+    <div>
+      <ul id="sortable" class="list_cf_non_selected">
+        <% cfs.each do |cf| %>
+            <li class='ui-state-default' id="non_selected_<%= cf.id %>"> <%= cf.name %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="cart">
+  <h1 class="ui-widget-header">Selected CF</h1>
+  <div class="ui-widget-content">
+    <ol class="list_cf_selected">
+      <% if cfs_opt.blank? %>
+         <li class="placeholder">Add your items here</li>
+      <% end %>
+      <% cfs_opt.each do |cf| %>
+          <li class="cf_objects" id="<%= cf.id %>">
+            <span class="delete_cf" onclick="delete_cf_li(<%= cf.id %>)">delete</span>
+            <%= cf.name %></li>
+      <% end %>
+    </ol>
+  </div>
+</div>
+<div id="choosed_cf">
+  <%= text_field_tag "settings[choosed_cf]", @settings[:choosed_cf] %>
+</div>
+</div>

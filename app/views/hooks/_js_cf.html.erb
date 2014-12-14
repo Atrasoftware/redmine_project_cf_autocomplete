@@ -1,0 +1,10 @@
+<script>
+    $(function() {
+        <% @hash.each do |key, value| %>
+        var availableTags<%=key%> = <%= value %>;
+        $("#project_custom_field_values_<%= key %>").autocomplete({
+            source: availableTags<%=key%>
+        });
+        <% end %>
+    });
+</script>
