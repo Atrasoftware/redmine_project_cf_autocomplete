@@ -7,7 +7,7 @@ module  Patches
 
       base.send(:include, InstanceMethods)
       base.class_eval do
-        before_filter :get_hash, :only=>[:new, :settings]
+        before_filter :get_hash, :only=>[:new, :settings,:copy]
       end
     end
   end
