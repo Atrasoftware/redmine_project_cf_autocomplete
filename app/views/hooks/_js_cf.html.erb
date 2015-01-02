@@ -25,7 +25,9 @@
        $(document).ready(function(){
 
         //<![CDATA[
-            <% @hash.each do |key, value|   %>
+           <%
+           unless @hash.nil?
+             @hash.each do |key, value|   %>
                tab = [];
                <% value.each do |v|%>
                      tab.push("<%= v %>");
@@ -35,7 +37,7 @@
                 $("#project_custom_field_values_<%= key %>").autocomplete({
                     source: availableTags<%=key%>
                 });
-            <% end %>
+            <% end; end %>
 
         //]]>
         });
